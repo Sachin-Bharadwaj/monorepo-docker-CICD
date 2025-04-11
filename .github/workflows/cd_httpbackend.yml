@@ -1,0 +1,29 @@
+## Build the docker image
+## Push the docker image to docker hub
+## SSH into our VM and start the new image
+
+name: Deploy the http-backend
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2 ## this clones the code on the ubuntu machine
+
+      - name: Docker login
+        uses: docker/login-actions@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push ## docker build and docker push
+        uses: docker/build-push-action@v4
+        with:
+          context: . # build from root folder
+          file: ./docker/Dockerfile.http-backend
+          push: true
+          tags: sachinbharadwaj/todo-app-http-backend:${{ github.sha }}
