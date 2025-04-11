@@ -2,7 +2,7 @@
 ## Push the docker image to docker hub
 ## SSH into our VM and start the new image
 
-name: Deploy the http-backend
+name: Deploy the ws-backend
 on:
   push:
     branches: [main]
@@ -24,12 +24,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: . # build from root folder
-          file: ./docker/Dockerfile.http-backend
+          file: ./docker/Dockerfile.ws-backend
           push: true
-          tags: sachinbharadwaj/todo-app-http-backend:${{ github.sha }}
-
-      - name: Deploy to the VM
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
-          chmod 700 /home/runner/ssh_key
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@64.227.169.180 -t "docker stop user_backend && docker run --name user_backend -d -p 8080:8080 sachinbharadwaj/todo-app-http-backend:${{ github.sha }}"
+          tags: sachinbharadwaj/todo-app-ws-backend:${{ github.sha }}
